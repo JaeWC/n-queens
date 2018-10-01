@@ -9,7 +9,8 @@
   "scripts": {
     "test": "mocha test.mocha.js",
     "precommit": "lint-staged",
-    "lint": "./node_modules/.bin/eslint src"
+    "lint": "./node_modules/.bin/eslint src",
+    "lint-fix": "./node_modules/.bin/eslint --fix src"
   },
   "lint-staged": {
     "linters": {
