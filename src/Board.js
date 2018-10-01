@@ -79,7 +79,8 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function (rowIndex) {
-      return this.rows()[rowIndex].filter(el => el === 1).length > 1;
+      // return this.rows()[rowIndex].filter(el => el === 1).length > 1;
+      return this.get(rowIndex).filter(el => el === 1).length > 1;
     },
 
     // test if any rows on this board contain conflicts
@@ -138,7 +139,7 @@
     hasAnyMajorDiagonalConflicts: function () {
       const index = this.rows().length - 1;
 
-      for (let majorDIndex = -1 * index; majorDIndex < index; majorDIndex++) {
+      for (let majorDIndex = -1 * index; majorDIndex < index + 1; majorDIndex++) {
         if (this.hasMajorDiagonalConflictAt(majorDIndex)) {
           return true;
         }
@@ -169,7 +170,7 @@
     hasAnyMinorDiagonalConflicts: function () {
       const maxIndex = (this.rows().length - 1) * 2;
 
-      for (var minorDIndex = 0; minorDIndex < maxIndex; minorDIndex++) {
+      for (var minorDIndex = 0; minorDIndex < maxIndex + 1; minorDIndex++) {
         if (this.hasMinorDiagonalConflictAt(minorDIndex)) {
           return true;
         }
