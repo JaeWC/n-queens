@@ -38,24 +38,28 @@ window.findNRooksSolution = function (n) {
 };
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
-window.countNRooksSolutions = function (n) {
-  var solutionCount = 1; // fixme
+window.countNRooksSolutions = function (n, board, indexRow, rooksLeft) {
+  var solutionCount = 0; // fixme
 
-  var recursion = function (n) {
-    var num = n;
-    var board = new Board({ n: num });
-    var innerCount = 0;
-    for (var i = 0; i < num; i++) {
+  indexRow = indexRow || 0;
+  board = board || new Board({ n: n });
+  if (rooksLeft === undefined) rooksLeft = n;
+
+  if (rooksLeft > 0) {
+    for (var col = 0; col < n; col++) {
+      board.togglePiece(indexRow, col);
+      rooksLeft--;
+      indexRow++;
       if (!board.hasAnyRooksConflicts()) {
-        innerCount++;
+        solutionCount = solutionCount + window.countNRooksSolutions(n, board, indexRow, rooksLeft);
       }
+      indexRow--;
+      board.togglePiece(indexRow, col);
+      rooksLeft++;
     }
-    return innerCount;
-  };
-  for (var j = n; j > 0; j--) {
-    solutionCount *= recursion(j);
+  } else {
+    solutionCount++;
   }
-
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
@@ -104,61 +108,35 @@ window.findNQueensSolution = function (n, indexRow, indexCol) {
 };
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
-window.countNQueensSolutions = function (n, indexRow, solution, solutionCount, cache) {
-  solutionCount = solutionCount || 0; // fixme
+window.countNQueensSolutions = function (n, board, indexRow, queensLeft) {
+  var solutionCount = 0; // fixme
+
   indexRow = indexRow || 0;
-  solution = solution || new Board({ n: n });
-  var queensLeft = n;
-  cache = cache || [];
+  board = board || new Board({ n: n });
+  console.log('queenleft : ', queensLeft);
+  if (queensLeft === undefined) queensLeft = n;
+  console.log('queenleft : ', queensLeft);
 
-  if (n === 0) {
-    solutionCount = 1;
-    return solutionCount;
-  }
+  if (n <= 1) return 1;
 
-  if (indexRow === n) return solutionCount;
-
-  for (var col = 0; col < n; col++) {
-    solution.rows()[indexRow][col] = 1;
-    queensLeft--;
-    indexRow++;
-    if (!solution.hasAnyRowConflicts() && !solution.hasAnyColConflicts() && !solution.hasAnyMajorDiagonalConflicts() && !solution.hasMinorDiagonalConflictAt()) {
-      solutionCount += countNQueensSolutions(n, indexRow, solution, solutionCount, cache);
+  if (queensLeft > 0) {
+    for (var col = 0; col < n; col++) {
+      console.log('row is : ', indexRow);
+      console.log('col is : ', col);
+      board.togglePiece(indexRow, col);
+      queensLeft--;
+      indexRow++;
+      if (!board.hasAnyQueensConflicts()) {
+        console.log('queenleft : ', queensLeft);
+        solutionCount = solutionCount + countNQueensSolutions(n, board, indexRow, queensLeft);
+      }
+      indexRow--;
+      board.togglePiece(indexRow, col);
+      queensLeft++;
     }
-    indexRow--;
-    solution.rows()[indexRow][col] = 0;
-    queensLeft++;
-  }
-
-  if (queensLeft === 0) {
+  } else {
     solutionCount++;
   }
-
+  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
-  // if (queensLeft === 0) {
-  //   console.log(solutionCount);
-  //   console.log('cache : ', cache);
-  //   if (!cache.includes(JSON.stringify(solution.rows()))) {
-  //     cache.push(JSON.stringify(solution.rows()));
-  //     console.log('cache : ', cache);
-  //     solutionCount++;
-  //   }
-
-  //   console.log('result : ' , solutionCount);
-  //   console.log(JSON.stringify(solution.rows()));
-  // }
-
-  // indexRow++
-  // if (indexRow < n) {
-  //   return countNQueensSolutions(n, indexRow, solution, solutionCount, cache);
-  // } else if (col < n) {
-  //   col++
-  //   if (indexRow === n && col === n) {
-  //     console.log('Number of solutions for ' + n + ' queens:', solutionCount);
-  //     return solutionCount;
-  //   } else {
-  //     indexRow = 0;
-  //     return countNQueensSolutions(n, indexRow, solution, solutionCount, cache);
-  //   }
-  // }
 };
