@@ -113,21 +113,16 @@ window.countNQueensSolutions = function (n, board, indexRow, queensLeft) {
 
   indexRow = indexRow || 0;
   board = board || new Board({ n: n });
-  console.log('queenleft : ', queensLeft);
   if (queensLeft === undefined) queensLeft = n;
-  console.log('queenleft : ', queensLeft);
 
   if (n <= 1) return 1;
 
   if (queensLeft > 0) {
     for (var col = 0; col < n; col++) {
-      console.log('row is : ', indexRow);
-      console.log('col is : ', col);
       board.togglePiece(indexRow, col);
       queensLeft--;
       indexRow++;
       if (!board.hasAnyQueensConflicts()) {
-        console.log('queenleft : ', queensLeft);
         solutionCount = solutionCount + countNQueensSolutions(n, board, indexRow, queensLeft);
       }
       indexRow--;
